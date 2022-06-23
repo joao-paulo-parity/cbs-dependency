@@ -26,6 +26,6 @@ default:
 check-dependent:
   <<: *check-dependent-project
   variables:
-    DEPENDENT_REPO: cbs-dependency
-    GITLAB_DEPENDENT_PATH: "joao-paulo-parity/cbs-dependency"
+    DEPENDENT_REPO: cbs-dependent
+    GITLAB_DEPENDENT_PATH: "joao-paulo-parity/cbs-dependent"
     GITLAB_DEPENDENT_PUSH_TOKEN: $DEPENDENT_PUSH_TOKEN

@@ -1,8 +1,31 @@
+workflow:
+  rules:
+    - if: $CI_COMMIT_REF_NAME =~ /^[0-9]+$/ # PRs
+
 default:
   image: bash
   tags:
     - testlab-docker
 
-hello:
+.check-dependent-project:          &check-dependent-project
+  image: "paritytech/ci-linux:production"
   script:
-    - echo "hi"
+    - git clone
+        --depth=1
+        --branch=cbs
+        https://github.com/joao-paulo-parity/pipeline-scripts
+    - ./pipeline-scripts/check_dependent_project.sh
+        --org joao-paulo-parity
+        --dependent-repo "$DEPENDENT_REPO"
+        --github-api-token "$GITHUB_PR_TOKEN"
+        --gitlab-url "$CI_SERVER_URL"
+        --gitlab-dependent-path "$GITLAB_DEPENDENT_PATH"
+        --gitlab-dependent-push-token "$GITLAB_DEPENDENT_PUSH_TOKEN"
+        --job-commit-sha "$CI_COMMIT_SHA"
+
+check-dependent:
+  <<: *check-dependent-project
+  variables:
+    DEPENDENT_REPO: cbs-dependency
+    GITLAB_DEPENDENT_PATH: "joao-paulo-parity/cbs-dependency"
+    GITLAB_DEPENDENT_PUSH_TOKEN: $DEPENDENT_PUSH_TOKEN
